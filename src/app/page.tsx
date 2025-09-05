@@ -26,11 +26,6 @@ export default function Home() {
   
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: questions.reduce((acc, q) => {
-      // @ts-ignore
-      acc[q.key] = [];
-      return acc;
-    }, {} as z.infer<typeof FormSchema>),
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
