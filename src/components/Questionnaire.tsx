@@ -51,14 +51,14 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     <AnimatePresence mode="wait">
       <MotionCard 
         key={currentStep}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3 }}
-        className="w-full border-2 shadow-lg"
+        initial={{ opacity: 0, y: 30, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -30, scale: 0.98 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+        className="w-full border-0 bg-card/50 shadow-2xl shadow-black/20"
       >
         <CardHeader>
-          <Progress value={(currentStep / totalSteps) * 100} className="w-full mb-4 h-2" />
+          <Progress value={((currentStep + 1) / totalSteps) * 100} className="w-full mb-6 h-1" />
           <CardTitle className="font-headline text-2xl md:text-3xl text-center">
             {currentQuestion.question}
           </CardTitle>
@@ -87,7 +87,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                                 >
                                   <Label
                                     htmlFor={`${currentQuestion.key}-${option}`}
-                                    className="flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-4 text-center font-body h-full transition-all cursor-pointer hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary has-[:checked]:shadow-md"
+                                    className="flex flex-col items-center justify-center rounded-lg border-2 border-muted/50 bg-transparent p-4 text-center font-body h-full transition-all duration-300 cursor-pointer hover:bg-accent/10 hover:border-accent has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:shadow-lg has-[:checked]:shadow-primary/10"
                                   >
                                     <FormControl>
                                       <Checkbox
@@ -96,7 +96,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                                         checked={field.value?.includes(option)}
                                         onCheckedChange={(checked) => {
                                           return checked
-                                            ? field.onChange([...field.value, option])
+                                            ? field.onChange([...(field.value || []), option])
                                             : field.onChange(
                                                 field.value?.filter(
                                                   (value: string) => value !== option
@@ -115,7 +115,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                         );
                       })}
                     </div>
-                    <FormMessage className="text-center" />
+                    <FormMessage className="text-center pt-2" />
                   </FormItem>
                 )}
               />
