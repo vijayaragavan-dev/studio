@@ -11,12 +11,12 @@ import type { FormSchema } from '@/lib/schema';
 import { keyMapping } from '@/lib/data';
 
 export async function getSuggestionsAction(data: z.infer<typeof FormSchema>) {
-  const input: SuggestDestinationsBasedOnPreferencesInput = Object.entries(data).reduce(
+  const input = Object.entries(data).reduce(
     (acc, [key, value]) => {
       const aiKey = keyMapping[key];
       if (aiKey) {
         // @ts-ignore
-        acc[aiKey] = value;
+        acc[aiKey] = Array.isArray(value) ? value.join(', ') : value;
       }
       return acc;
     },

@@ -13,7 +13,7 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { questions } from '@/lib/data';
@@ -71,31 +71,50 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                 name={currentQuestion.key as any}
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="grid grid-cols-2 md:grid-cols-3 gap-4"
-                      >
-                        {currentQuestion.options.map((option, index) => {
-                          const Icon = currentQuestion.icons ? currentQuestion.icons[index] : null;
-                          return (
-                            <FormItem key={option} className="flex-1">
-                              <Label
-                                htmlFor={`${currentQuestion.key}-${option}`}
-                                className="flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-4 text-center font-body h-full transition-all cursor-pointer hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary has-[:checked]:shadow-md"
-                              >
-                                <FormControl>
-                                  <RadioGroupItem value={option} id={`${currentQuestion.key}-${option}`} className="sr-only" />
-                                </FormControl>
-                                {Icon && <Icon className="w-8 h-8 mb-2 text-primary" />}
-                                {option}
-                              </Label>
-                            </FormItem>
-                          );
-                        })}
-                      </RadioGroup>
-                    </FormControl>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {currentQuestion.options.map((option, index) => {
+                        const Icon = currentQuestion.icons ? currentQuestion.icons[index] : null;
+                        return (
+                          <FormField
+                            key={option}
+                            control={form.control}
+                            name={currentQuestion.key as any}
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={option}
+                                  className="flex-1"
+                                >
+                                  <Label
+                                    htmlFor={`${currentQuestion.key}-${option}`}
+                                    className="flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-4 text-center font-body h-full transition-all cursor-pointer hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary has-[:checked]:shadow-md"
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        id={`${currentQuestion.key}-${option}`}
+                                        className="sr-only"
+                                        checked={field.value?.includes(option)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([...field.value, option])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value: string) => value !== option
+                                                )
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    {Icon && <Icon className="w-8 h-8 mb-2 text-primary" />}
+                                    {option}
+                                  </Label>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
                     <FormMessage className="text-center" />
                   </FormItem>
                 )}

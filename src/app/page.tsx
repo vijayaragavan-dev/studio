@@ -25,7 +25,7 @@ export default function Home() {
     resolver: zodResolver(FormSchema),
     defaultValues: questions.reduce((acc, q) => {
       // @ts-ignore
-      acc[q.key] = q.options[0];
+      acc[q.key] = [];
       return acc;
     }, {} as z.infer<typeof FormSchema>),
   });
