@@ -1,1 +1,5 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/suggest-destinations-based-on-preferences.ts';
+import '@/ai/flows/display-destination-details-with-genai-brief.ts';
