@@ -13,6 +13,7 @@ import Questionnaire from '@/components/Questionnaire';
 import SuggestionResults from '@/components/SuggestionResults';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/use-toast';
+import { questions } from '@/lib/data';
 
 export default function Home() {
   const [view, setView] = useState<'form' | 'suggestions'>('form');
@@ -22,7 +23,11 @@ export default function Home() {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {},
+    defaultValues: questions.reduce((acc, q) => {
+      // @ts-ignore
+      acc[q.key] = q.options[0];
+      return acc;
+    }, {} as z.infer<typeof FormSchema>),
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
