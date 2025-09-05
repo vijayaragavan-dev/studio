@@ -55,7 +55,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -30, scale: 0.98 }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
-        className="w-full border-0 bg-card/50 shadow-2xl shadow-black/20"
+        className="w-full border-0 bg-card/50 shadow-2xl shadow-black/20 mt-12"
       >
         <CardHeader>
           <Progress value={((currentStep + 1) / totalSteps) * 100} className="w-full mb-6 h-1" />

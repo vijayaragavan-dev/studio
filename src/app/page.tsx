@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plane } from 'lucide-react';
+import { Plane, Compass, Star } from 'lucide-react';
+import { motion, useAnimation } from 'framer-motion';
 
 import type { Destination } from '@/lib/types';
 import { FormSchema } from '@/lib/schema';
@@ -14,12 +15,25 @@ import SuggestionResults from '@/components/SuggestionResults';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/use-toast';
 import { questions } from '@/lib/data';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [view, setView] = useState<'form' | 'suggestions'>('form');
   const [suggestions, setSuggestions] = useState<Destination[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const questionnaireRef = useRef<HTMLDivElement>(null);
+
+  const [showForm, setShowForm] = useState(false);
+  const controls = useAnimation();
+  
+  useEffect(() => {
+    controls.start({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" }
+    });
+  }, [controls]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -37,6 +51,7 @@ export default function Home() {
       if (result && result.destinations && result.destinations.length > 0) {
         setSuggestions(result.destinations);
         setView('suggestions');
+        setShowForm(false);
       } else {
         toast({
           variant: 'destructive',
@@ -58,6 +73,17 @@ export default function Home() {
 
   const handleRefine = () => {
     setView('form');
+    setShowForm(true);
+    setTimeout(() => {
+      questionnaireRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+  
+  const handleStart = () => {
+    setShowForm(true);
+    setTimeout(() => {
+      questionnaireRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   return (
@@ -67,16 +93,36 @@ export default function Home() {
           <Plane className="w-10 h-10 text-primary" />
           Wanderlust Wizard
         </h1>
-        <p className="font-body text-muted-foreground mt-2 text-lg">
-          Your personal AI-powered travel destination finder.
-        </p>
       </header>
 
       <main className="flex-grow container mx-auto max-w-4xl px-4 pb-12">
-        {view === 'form' ? (
-          <Questionnaire form={form} onSubmit={onSubmit} isLoading={isLoading} />
-        ) : (
+        {view === 'suggestions' ? (
           <SuggestionResults suggestions={suggestions} onRefine={handleRefine} />
+        ) : (
+          <>
+            {!showForm && (
+                 <motion.div 
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={controls}
+                 className="text-center p-8 rounded-lg bg-card/30"
+               >
+                 <Compass className="w-16 h-16 text-primary mx-auto mb-4" />
+                 <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4">Discover Your Next Adventure</h2>
+                 <p className="font-body text-muted-foreground text-lg mb-6 max-w-2xl mx-auto">
+                   Tired of endless scrolling for travel ideas? Answer a few simple questions, and our AI will curate a list of personalized travel destinations just for you. From hidden gems to popular hotspots, let's find your perfect getaway.
+                 </p>
+                 <Button size="lg" onClick={handleStart}>
+                   <Star className="mr-2" />
+                   Start the Magic
+                 </Button>
+               </motion.div>
+            )}
+            <div ref={questionnaireRef}>
+              {showForm && (
+                <Questionnaire form={form} onSubmit={onSubmit} isLoading={isLoading} />
+              )}
+            </div>
+          </>
         )}
       </main>
 
