@@ -11,7 +11,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -81,14 +80,14 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                         {currentQuestion.options.map((option, index) => {
                           const Icon = currentQuestion.icons ? currentQuestion.icons[index] : null;
                           return (
-                            <FormItem key={option}>
-                              <FormControl>
-                                <RadioGroupItem value={option} id={`${currentQuestion.key}-${option}`} className="sr-only" />
-                              </FormControl>
+                            <FormItem key={option} className="flex-1">
                               <Label
                                 htmlFor={`${currentQuestion.key}-${option}`}
-                                className="flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-4 text-center font-body h-full transition-all cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:shadow-md [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:shadow-md"
+                                className="flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-4 text-center font-body h-full transition-all cursor-pointer hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary has-[:checked]:shadow-md"
                               >
+                                <FormControl>
+                                  <RadioGroupItem value={option} id={`${currentQuestion.key}-${option}`} className="sr-only" />
+                                </FormControl>
                                 {Icon && <Icon className="w-8 h-8 mb-2 text-primary" />}
                                 {option}
                               </Label>
