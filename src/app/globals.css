@@ -4,48 +4,65 @@
 
 @layer base {
   :root {
-    --background: 20 14% 95%;
-    --foreground: 24 10% 10%;
-    --card: 20 14% 98%;
-    --card-foreground: 24 10% 10%;
-    --popover: 20 14% 98%;
-    --popover-foreground: 24 10% 10%;
-    --primary: 35 92% 55%;
-    --primary-foreground: 24 10% 10%;
-    --secondary: 24 6% 85%;
-    --secondary-foreground: 24 10% 10%;
-    --muted: 24 6% 90%;
-    --muted-foreground: 24 6% 40%;
-    --accent: 35 92% 65%;
-    --accent-foreground: 24 10% 10%;
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+ 
+    --primary: 202 81% 45%; /* A travel-themed blue */
+    --primary-foreground: 210 20% 98%;
+ 
+    --secondary: 220 13% 91%;
+    --secondary-foreground: 224 71.4% 4.1%;
+ 
+    --muted: 220 9% 46.1%;
+    --muted-foreground: 220 8.9% 46.1%;
+ 
+    --accent: 158 79% 45%; /* A complementary green accent */
+    --accent-foreground: 210 20% 98%;
+ 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 24 6% 80%;
-    --input: 24 6% 85%;
-    --ring: 35 92% 55%;
-    --radius: 0.75rem;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 202 81% 45%;
+ 
+    --radius: 0.5rem;
   }
  
   .dark {
-    --background: 220 13% 11%;
-    --foreground: 60 90% 98%;
-    --card: 220 13% 15%;
-    --card-foreground: 60 90% 98%;
-    --popover: 220 13% 15%;
-    --popover-foreground: 60 90% 98%;
-    --primary: 43 96% 56%;
-    --primary-foreground: 43 96% 10%;
-    --secondary: 220 13% 20%;
-    --secondary-foreground: 60 90% 98%;
-    --muted: 220 13% 25%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 43 96% 66%;
-    --accent-foreground: 43 96% 10%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 60 90% 98%;
-    --border: 220 13% 20%;
-    --input: 220 13% 20%;
-    --ring: 43 96% 56%;
+    --background: 222 47% 11%;
+    --foreground: 210 20% 98%;
+
+    --card: 222 47% 14%;
+    --card-foreground: 210 20% 98%;
+ 
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 20% 98%;
+ 
+    --primary: 202 81% 55%; /* A travel-themed blue */
+    --primary-foreground: 222 47% 11%;
+ 
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 20% 98%;
+ 
+    --muted: 215 28% 25%;
+    --muted-foreground: 217 19% 50%;
+ 
+    --accent: 158 79% 55%; /* A complementary green accent */
+    --accent-foreground: 222 47% 11%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 202 81% 55%;
   }
 }
 

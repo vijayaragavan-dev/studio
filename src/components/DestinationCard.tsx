@@ -58,13 +58,13 @@ export default function DestinationCard({ destination }: DestinationCardProps) {
   return (
     <>
       <Card
-        className="h-full flex flex-col overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer group"
+        className="h-full flex flex-col overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300 cursor-pointer group border-transparent hover:border-primary"
         onClick={handleCardClick}
       >
         <CardHeader className="p-0">
           <div className="relative w-full aspect-video overflow-hidden">
             <Image
-              src={placeholderImage}
+              src={destination.imageUrl || placeholderImage}
               alt={destination.name}
               data-ai-hint={`${destination.name} landscape`}
               fill
@@ -74,21 +74,21 @@ export default function DestinationCard({ destination }: DestinationCardProps) {
         </CardHeader>
         <CardContent className="p-6 flex-grow flex flex-col">
           <CardTitle className="font-headline text-2xl mb-2">{destination.name}</CardTitle>
-          <CardDescription className="font-body flex-grow">{destination.description}</CardDescription>
-          <Button variant="link" className="p-0 h-auto mt-4 self-start">
+          <CardDescription className="font-body flex-grow text-muted-foreground">{destination.description}</CardDescription>
+          <div className="text-primary font-semibold mt-4 self-start group-hover:underline">
             View Details
-          </Button>
+          </div>
         </CardContent>
       </Card>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-headline text-2xl">{destination.name}</DialogTitle>
           </DialogHeader>
           <div className="relative w-full aspect-video rounded-lg overflow-hidden my-4">
              <Image
-              src={placeholderImage}
+              src={destination.imageUrl || placeholderImage}
               alt={destination.name}
               data-ai-hint={`${destination.name} scenery`}
               fill
@@ -109,7 +109,7 @@ export default function DestinationCard({ destination }: DestinationCardProps) {
               target="_blank" 
               rel="noopener noreferrer"
             >
-              Learn More <ExternalLink className="ml-2 h-4 w-4" />
+              Learn More on Google <ExternalLink className="ml-2 h-4 w-4" />
             </a>
           </Button>
         </DialogContent>
