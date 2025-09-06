@@ -53,16 +53,16 @@ export default function DestinationCard({ destination }: DestinationCardProps) {
     }
   };
 
-  const placeholderImage = `https://picsum.photos/seed/${destination.name.replace(/\s/g, '')}/600/400`;
+  const placeholderImage = `https://picsum.photos/seed/${destination.name.replace(/\s/g, '')}/800/600`;
 
   return (
     <>
       <Card
-        className="h-full flex flex-col overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300 cursor-pointer group border-transparent hover:border-primary"
+        className="overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300 cursor-pointer group border-transparent hover:border-primary w-full"
         onClick={handleCardClick}
       >
-        <CardHeader className="p-0">
-          <div className="relative w-full aspect-video overflow-hidden">
+        <div className="grid md:grid-cols-2">
+          <div className="relative w-full aspect-video md:aspect-auto">
             <Image
               src={destination.imageUrl || placeholderImage}
               alt={destination.name}
@@ -71,20 +71,20 @@ export default function DestinationCard({ destination }: DestinationCardProps) {
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
-        </CardHeader>
-        <CardContent className="p-6 flex-grow flex flex-col">
-          <CardTitle className="font-headline text-2xl mb-2">{destination.name}</CardTitle>
-          <CardDescription className="font-body flex-grow text-muted-foreground">{destination.description}</CardDescription>
-          <div className="text-primary font-semibold mt-4 self-start group-hover:underline">
-            View Details
+          <div className="p-6 flex flex-col">
+            <CardTitle className="font-headline text-2xl mb-2">{destination.name}</CardTitle>
+            <CardDescription className="font-body flex-grow text-muted-foreground">{destination.description}</CardDescription>
+            <div className="text-primary font-semibold mt-4 self-start group-hover:underline">
+              View Details
+            </div>
           </div>
-        </CardContent>
+        </div>
       </Card>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="font-headline text-2xl">{destination.name}</DialogTitle>
+            <DialogTitle className="font-headline text-3xl">{destination.name}</DialogTitle>
           </DialogHeader>
           <div className="relative w-full aspect-video rounded-lg overflow-hidden my-4">
              <Image
@@ -104,9 +104,9 @@ export default function DestinationCard({ destination }: DestinationCardProps) {
             <DialogDescription className="font-body text-base">{details.summary}</DialogDescription>
           )}
            <Button asChild className="mt-4">
-            <a 
-              href={`https://www.google.com/search?q=${encodeURIComponent(destination.name)}`} 
-              target="_blank" 
+            <a
+              href={`https://www.google.com/search?q=${encodeURIComponent(destination.name)}`}
+              target="_blank"
               rel="noopener noreferrer"
             >
               Learn More on Google <ExternalLink className="ml-2 h-4 w-4" />

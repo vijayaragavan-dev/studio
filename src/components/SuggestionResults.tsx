@@ -13,7 +13,7 @@ interface SuggestionResultsProps {
 
 export default function SuggestionResults({ suggestions, onRefine }: SuggestionResultsProps) {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -28,7 +28,7 @@ export default function SuggestionResults({ suggestions, onRefine }: SuggestionR
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="space-y-8">
         <AnimatePresence>
           {suggestions.map((destination, index) => (
             <motion.div
