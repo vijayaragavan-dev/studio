@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import type { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plane, Compass, Star, ArrowRight, Lightbulb, Bot, CheckCircle } from 'lucide-react';
-import { motion, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 import type { Destination } from '@/lib/types';
@@ -26,6 +26,10 @@ export default function Home() {
   
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: questions.reduce((acc, q) => {
+      acc[q.key as keyof z.infer<typeof FormSchema>] = [];
+      return acc;
+    }, {} as z.infer<typeof FormSchema>),
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {

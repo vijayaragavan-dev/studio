@@ -3,8 +3,13 @@ import { questions } from './data';
 
 const schemaFields = questions.reduce(
   (acc, q) => {
-    acc[q.key] = z.array(z.string()).refine(value => value.length > 0, {
-      message: 'Please make at least one selection.',
+    acc[q.key] = z.array(z.string()).superRefine((val, ctx) => {
+      if (val.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Please make at least one selection.`,
+        });
+      }
     });
     return acc;
   },
