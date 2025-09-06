@@ -77,9 +77,16 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
           <CardDescription className="text-center">Review your choices before we find your perfect destination.</CardDescription>
         </CardHeader>
         <CardContent>
-          <pre className="bg-muted/30 p-4 rounded-lg text-sm overflow-x-auto">
-            {JSON.stringify(summary, null, 2)}
-          </pre>
+          <div className="space-y-4">
+            {questions.map((q) => (
+              <div key={q.key} className="bg-muted/30 p-3 rounded-lg">
+                <p className="font-semibold text-base mb-1">{q.question}</p>
+                <p className="text-muted-foreground text-sm">
+                  {(summary[q.key as keyof typeof summary] as string[]).join(', ')}
+                </p>
+              </div>
+            ))}
+          </div>
         </CardContent>
         <CardFooter className="flex justify-between items-center pt-4">
           <Button type="button" variant="outline" onClick={handleBack}>
