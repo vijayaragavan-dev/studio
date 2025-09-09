@@ -17,18 +17,18 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SuggestDestinationsBasedOnPreferencesInputSchema = z.object({
-  travelMood: z.string().describe('The user\\'s travel mood.'),
-  travelType: z.string().describe('The user\\'s preferred travel type.'),
-  travelPace: z.string().describe('The user\\'s desired travel pace.'),
-  budgetStyle: z.string().describe('The user\\'s budget style.'),
-  travelDuration: z.string().describe('The user\\'s desired travel duration.'),
-  preferredWeather: z.string().describe('The user\\'s preferred weather conditions.'),
-  favoriteScenery: z.string().describe('The user\\'s favorite scenery type.'),
-  preferredFoodStyle: z.string().describe('The user\\'s preferred food style.'),
-  likedActivities: z.string().describe('The activities the user enjoys.'),
-  travelAroundPreference: z.string().describe('The user\\'s preferred mode of transportation.'),
-  tripGoal: z.string().describe('The user\\'s main goal for the trip.'),
-  preferredRegion: z.string().describe('The user\\'s preferred travel region.'),
+  travelMood: z.string().describe("The user's travel mood."),
+  travelType: z.string().describe("The user's preferred travel type."),
+  travelPace: z.string().describe("The user's desired travel pace."),
+  budgetStyle: z.string().describe("The user's budget style."),
+  travelDuration: z.string().describe("The user's desired travel duration."),
+  preferredWeather: z.string().describe("The user's preferred weather conditions."),
+  favoriteScenery: z.string().describe("The user's favorite scenery type."),
+  preferredFoodStyle: z.string().describe("The user's preferred food style."),
+  likedActivities: z.string().describe("The activities the user enjoys."),
+  travelAroundPreference: z.string().describe("The user's preferred mode of transportation."),
+  tripGoal: z.string().describe("The user's main goal for the trip."),
+  preferredRegion: z.string().describe("The user's preferred travel region."),
 });
 
 export type SuggestDestinationsBasedOnPreferencesInput = z.infer<
