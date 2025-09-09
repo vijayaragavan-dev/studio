@@ -212,9 +212,6 @@ export default function Home() {
 
       <footer className="text-center p-6 text-muted-foreground text-sm font-body border-t border-border">
         <p>&copy; {new Date().getFullYear()} Wanderlust Wizard. All rights reserved.</p>
-        <Link href="/backend-code" className="text-primary hover:underline mt-2 inline-block">
-          View Backend Code
-        </Link>
       </footer>
     </div>
   );
