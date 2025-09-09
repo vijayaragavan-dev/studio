@@ -28,10 +28,7 @@ export default function Home() {
   
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: questions.reduce((acc, q) => {
-      acc[q.key as keyof z.infer<typeof FormSchema>] = [];
-      return acc;
-    }, {} as z.infer<typeof FormSchema>),
+    defaultValues: {},
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -214,7 +211,6 @@ export default function Home() {
       </main>
 
       <footer className="text-center p-6 text-muted-foreground text-sm font-body border-t border-border">
-        <p>Powered by Firebase &amp; Gemini AI</p>
         <p>&copy; {new Date().getFullYear()} Wanderlust Wizard. All rights reserved.</p>
         <Link href="/backend-code" className="text-primary hover:underline mt-2 inline-block">
           View Backend Code
