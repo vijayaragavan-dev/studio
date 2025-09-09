@@ -12,18 +12,18 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SuggestDestinationsBasedOnPreferencesInputSchema = z.object({
-  travelMood: z.string().describe('The user\'s travel mood.'),
-  travelType: z.string().describe('The user\'s preferred travel type.'),
-  travelPace: z.string().describe('The user\'s desired travel pace.'),
-  budgetStyle: z.string().describe('The user\'s budget style.'),
-  travelDuration: z.string().describe('The user\'s desired travel duration.'),
-  preferredWeather: z.string().describe('The user\'s preferred weather conditions.'),
-  favoriteScenery: z.string().describe('The user\'s favorite scenery type.'),
-  preferredFoodStyle: z.string().describe('The user\'s preferred food style.'),
-  likedActivities: z.string().describe('The activities the user enjoys.'),
-  travelAroundPreference: z.string().describe('The user\'s preferred mode of transportation.'),
-  tripGoal: z.string().describe('The user\'s main goal for the trip.'),
-  preferredRegion: z.string().describe('The user\'s preferred travel region.'),
+  travelMood: z.string().describe("The user's travel mood."),
+  travelType: z.string().describe("The user's preferred travel type."),
+  travelPace: z.string().describe("The user's desired travel pace."),
+  budgetStyle: z.string().describe("The user's budget style."),
+  travelDuration: z.string().describe("The user's desired travel duration."),
+  preferredWeather: z.string().describe("The user's preferred weather conditions."),
+  favoriteScenery: z.string().describe("The user's favorite scenery type."),
+  preferredFoodStyle: z.string().describe("The user's preferred food style."),
+  likedActivities: z.string().describe("The activities the user enjoys."),
+  travelAroundPreference: z.string().describe("The user's preferred mode of transportation."),
+  tripGoal: z.string().describe("The user's main goal for the trip."),
+  preferredRegion: z.string().describe("The user's preferred travel region."),
 });
 
 export type SuggestDestinationsBasedOnPreferencesInput = z.infer<
@@ -36,7 +36,7 @@ const SuggestDestinationsBasedOnPreferencesOutputSchema = z.object({
       z.object({
         name: z.string().describe('The name of the destination.'),
         description: z.string().describe('A short description of the destination.'),
-        imageUrl: z.string().describe('A URL of an image of the destination.'),
+        imageUrl: z.string().describe('A beautiful, descriptive prompt for an image of the destination.'),
       })
     )
     .describe('An array of suggested travel destinations.'),
@@ -49,7 +49,16 @@ export type SuggestDestinationsBasedOnPreferencesOutput = z.infer<
 export async function suggestDestinationsBasedOnPreferences(
   input: SuggestDestinationsBasedOnPreferencesInput
 ): Promise<SuggestDestinationsBasedOnPreferencesOutput> {
-  return suggestDestinationsBasedOnPreferencesFlow(input);
+  const result = await suggestDestinationsBasedOnPreferencesFlow(input);
+  
+  // Use a placeholder image service with the generated prompt
+  if (result.destinations) {
+    result.destinations.forEach(dest => {
+      dest.imageUrl = `https://picsum.photos/seed/${encodeURIComponent(dest.imageUrl)}/800/600`;
+    });
+  }
+
+  return result;
 }
 
 const prompt = ai.definePrompt({
@@ -71,9 +80,9 @@ Travel Around Preference: {{{travelAroundPreference}}}
 Trip Goal: {{{tripGoal}}}
 Preferred Region: {{{preferredRegion}}}
 
-Based on these preferences, suggest some travel destinations. For each destination, provide a name, a short description, and a URL of an image.
+Based on these preferences, suggest some travel destinations. For each destination, provide a name, a short description, and a beautiful, descriptive prompt for an image.
 
-Ensure the output matches the schema exactly.  The imageUrl should be a stable URL pointing to an actual image.  Do not include URLs that might expire or change.
+Ensure the output matches the schema exactly.
 `,
 });
 
