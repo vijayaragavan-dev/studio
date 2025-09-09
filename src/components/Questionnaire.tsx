@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -58,8 +59,8 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
 
   const cardVariants = {
     initial: { opacity: 0, y: 30 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -30 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeInOut" } },
+    exit: { opacity: 0, y: -30, transition: { duration: 0.3, ease: "easeInOut" } },
   };
 
   if (summary) {
@@ -69,7 +70,6 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
         animate="animate"
         exit="exit"
         variants={cardVariants}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
         className="w-full bg-card shadow-2xl shadow-black/20"
       >
         <CardHeader>
@@ -79,12 +79,18 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
         <CardContent>
           <div className="space-y-4">
             {questions.map((q) => (
-              <div key={q.key} className="bg-muted/30 p-3 rounded-lg">
+              <motion.div 
+                key={q.key} 
+                className="bg-muted/30 p-3 rounded-lg"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: questions.indexOf(q) * 0.05 }}
+              >
                 <p className="font-semibold text-base mb-1">{q.question}</p>
                 <p className="text-muted-foreground text-sm">
                   {(summary[q.key as keyof typeof summary] as string[]).join(', ')}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </CardContent>
@@ -109,7 +115,6 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
         animate="animate"
         exit="exit"
         variants={cardVariants}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
         className="w-full border-0 bg-card shadow-2xl shadow-black/20"
       >
         <CardHeader>
