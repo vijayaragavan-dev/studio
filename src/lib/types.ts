@@ -4,6 +4,7 @@ export interface Question {
   options: string[];
   key: string;
   icons?: React.FC<React.SVGProps<SVGSVGElement>>[];
+  selectType: 'single' | 'multiple';
 }
 
 export interface Destination {

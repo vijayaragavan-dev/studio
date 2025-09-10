@@ -44,6 +44,7 @@ export const questions: Question[] = [
     question: 'What’s your travel mood right now?',
     options: ['Adventure', 'Relaxation', 'Cultural', 'Romantic', 'Spiritual', 'No preference'],
     icons: [Zap, Anchor, Landmark, Heart, Sparkles, Star],
+    selectType: 'multiple',
   },
   {
     id: 2,
@@ -51,6 +52,7 @@ export const questions: Question[] = [
     question: 'Travel type?',
     options: ['Solo', 'With partner', 'With family', 'With friends group', 'Flexible', 'No preference'],
     icons: [User, Heart, Users, Users, Smile, Star],
+    selectType: 'single',
   },
   {
     id: 3,
@@ -58,6 +60,7 @@ export const questions: Question[] = [
     question: 'What’s your travel pace?',
     options: ['Fast & Action-Packed', 'Balanced', 'Slow & Relaxing', 'Family-Friendly', 'Immersive', 'No preference'],
     icons: [Rabbit, Plane, Turtle, Users, Landmark, Star],
+    selectType: 'multiple',
   },
   {
     id: 4,
@@ -65,6 +68,7 @@ export const questions: Question[] = [
     question: 'What is your budget style?',
     options: ['Low (backpacker)', 'Mid-range', 'Premium', 'Luxury', 'Mix of types', 'No preference'],
     icons: [Backpack, Wallet, Coins, Gem, Smile, Star],
+    selectType: 'single',
   },
   {
     id: 5,
@@ -72,6 +76,7 @@ export const questions: Question[] = [
     question: 'How long do you want to travel?',
     options: ['2–3 days', '4–6 days', '1 week', '2 weeks', '1 month', 'Flexible'],
     icons: [CalendarDays, CalendarDays, CalendarDays, CalendarDays, CalendarDays, Star],
+    selectType: 'single',
   },
   {
     id: 6,
@@ -79,6 +84,7 @@ export const questions: Question[] = [
     question: 'Preferred weather?',
     options: ['Hot & Sunny', 'Cold & Snowy', 'Cool Hills', 'Moderate', 'Doesn’t matter'],
     icons: [Sun, Snowflake, Mountain, Trees, Smile, Star],
+    selectType: 'single',
   },
   {
     id: 7,
@@ -86,6 +92,7 @@ export const questions: Question[] = [
     question: 'Favorite scenery?',
     options: ['Beaches', 'Mountains', 'Forests', 'Cities', 'Villages', 'No preference'],
     icons: [Waves, Mountain, Trees, Building2, Landmark, Star],
+    selectType: 'multiple',
   },
   {
     id: 8,
@@ -93,6 +100,7 @@ export const questions: Question[] = [
     question: 'Preferred food style?',
     options: ['Vegetarian', 'Vegan', 'Non-Vegetarian', 'Street Food Lover', 'Healthy & Clean', 'No preference'],
     icons: [Leaf, Salad, Beef, Cookie, HeartPulse, Star],
+    selectType: 'multiple',
   },
   {
     id: 9,
@@ -100,6 +108,7 @@ export const questions: Question[] = [
     question: 'Which activities do you like?',
     options: ['Adventure sports', 'Safari/Wildlife', 'Hiking/Trekking', 'Nightlife', 'Beach & Water Fun', 'No preference'],
     icons: [Swords, Trees, Mountain, Bike, Waves, Star],
+    selectType: 'multiple',
   },
   {
     id: 10,
@@ -107,6 +116,7 @@ export const questions: Question[] = [
     question: 'How do you like to travel around?',
     options: ['Car/Road trip', 'Train', 'Flight', 'Cruise/Ship', 'Mix of all', 'No preference'],
     icons: [Car, Train, Plane, Ship, Smile, Star],
+    selectType: 'multiple',
   },
   {
     id: 11,
@@ -114,6 +124,7 @@ export const questions: Question[] = [
     question: 'What’s your main goal for this trip?',
     options: ['Adventure', 'Relax & Heal', 'Culture & History', 'Bonding with family/friends', 'Self-discovery', 'No preference'],
     icons: [Zap, HeartPulse, Landmark, Users, BrainCircuit, Star],
+    selectType: 'multiple',
   },
   {
     id: 12,
@@ -121,6 +132,7 @@ export const questions: Question[] = [
     question: 'Preferred region?',
     options: ['India', 'International', 'Both', 'Nearby only', 'Open to any'],
     icons: [Globe, Globe, Globe, Globe, Globe, Star],
+    selectType: 'multiple',
   },
 ];
 

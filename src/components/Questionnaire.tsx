@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
 import { questions } from '@/lib/data';
@@ -33,8 +34,10 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
   const [summary, setSummary] = useState<z.infer<typeof FormSchema> | null>(null);
   const totalSteps = questions.length;
 
+  const currentQuestion = questions[currentStep];
+
   const handleNext = async () => {
-    const fieldName = questions[currentStep].key as keyof z.infer<typeof FormSchema>;
+    const fieldName = currentQuestion.key as keyof z.infer<typeof FormSchema>;
     const isValid = await form.trigger(fieldName);
     if (isValid) {
       if (currentStep < totalSteps - 1) {
@@ -52,7 +55,14 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     }
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
-  
+
+  const handleSingleSelect = async (value: string) => {
+    const fieldName = currentQuestion.key as any;
+    form.setValue(fieldName, value);
+    await new Promise(resolve => setTimeout(resolve, 300)); // Short delay for user to see selection
+    handleNext();
+  };
+
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
@@ -61,7 +71,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
           if (!isLoading) {
             onSubmit(summary);
           }
-        } else {
+        } else if (currentQuestion.selectType === 'multiple') {
           handleNext();
         }
       }
@@ -72,9 +82,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [currentStep, summary, isLoading]);
-
-  const currentQuestion = questions[currentStep];
+  }, [currentStep, summary, isLoading, currentQuestion]);
 
   const MotionCard = motion(Card);
 
@@ -100,8 +108,8 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
         <CardContent>
           <div className="space-y-4">
             {questions.map((q) => (
-              <motion.div 
-                key={q.key} 
+              <motion.div
+                key={q.key}
                 className="bg-muted/30 p-3 rounded-lg"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -109,7 +117,10 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
               >
                 <p className="font-semibold text-base mb-1">{q.question}</p>
                 <p className="text-muted-foreground text-sm">
-                  {(summary[q.key as keyof typeof summary] as string[]).join(', ')}
+                  {Array.isArray(summary[q.key as keyof typeof summary])
+                    ? (summary[q.key as keyof typeof summary] as string[]).join(', ')
+                    : (summary[q.key as keyof typeof summary] as string)
+                  }
                 </p>
               </motion.div>
             ))}
@@ -133,7 +144,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
 
   return (
     <AnimatePresence mode="wait">
-      <MotionCard 
+      <MotionCard
         key={currentStep}
         initial="initial"
         animate="animate"
@@ -146,7 +157,9 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
           <CardTitle className="font-headline text-2xl md:text-3xl text-center">
             {currentQuestion.question}
           </CardTitle>
-          <CardDescription className="text-center">Select one or more options that apply.</CardDescription>
+          <CardDescription className="text-center">
+            {currentQuestion.selectType === 'single' ? 'Select one option.' : 'Select one or more options that apply.'}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -154,17 +167,20 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
               <FormField
                 control={form.control}
                 name={currentQuestion.key as any}
-                render={({ field }) => (
+                render={() => (
                   <FormItem className="space-y-3">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {currentQuestion.options.map((option, index) => {
-                        const Icon = currentQuestion.icons ? currentQuestion.icons[index] : null;
-                        return (
-                          <FormField
-                            key={option}
-                            control={form.control}
-                            name={currentQuestion.key as any}
-                            render={({ field: checkboxField }) => {
+                    {currentQuestion.selectType === 'single' ? (
+                      <FormField
+                        control={form.control}
+                        name={currentQuestion.key as any}
+                        render={({ field }) => (
+                          <RadioGroup
+                            onValueChange={handleSingleSelect}
+                            defaultValue={field.value}
+                            className="grid grid-cols-2 md:grid-cols-3 gap-4"
+                          >
+                            {currentQuestion.options.map((option, index) => {
+                              const Icon = currentQuestion.icons ? currentQuestion.icons[index] : null;
                               return (
                                 <FormItem key={option} className="flex-1">
                                   <Label
@@ -172,31 +188,60 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                                     className="flex flex-col items-center justify-center rounded-lg border-2 bg-transparent p-4 text-center font-body h-full transition-all duration-300 cursor-pointer hover:bg-accent/10 hover:border-accent has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:shadow-md has-[:checked]:scale-105"
                                   >
                                     <FormControl>
-                                      <Checkbox
-                                        id={`${currentQuestion.key}-${option}`}
-                                        className="sr-only"
-                                        checked={checkboxField.value?.includes(option)}
-                                        onCheckedChange={(checked) => {
-                                          return checked
-                                            ? checkboxField.onChange([...(checkboxField.value || []), option])
-                                            : checkboxField.onChange(
-                                                checkboxField.value?.filter(
-                                                  (value: string) => value !== option
-                                                )
-                                              );
-                                        }}
-                                      />
+                                      <RadioGroupItem value={option} id={`${currentQuestion.key}-${option}`} className="sr-only" />
                                     </FormControl>
                                     {Icon && <Icon className="w-8 h-8 mb-3 text-primary" />}
                                     <span className="font-semibold">{option}</span>
                                   </Label>
                                 </FormItem>
                               );
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
+                            })}
+                          </RadioGroup>
+                        )}
+                      />
+                    ) : (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {currentQuestion.options.map((option, index) => {
+                          const Icon = currentQuestion.icons ? currentQuestion.icons[index] : null;
+                          return (
+                            <FormField
+                              key={option}
+                              control={form.control}
+                              name={currentQuestion.key as any}
+                              render={({ field: checkboxField }) => {
+                                return (
+                                  <FormItem key={option} className="flex-1">
+                                    <Label
+                                      htmlFor={`${currentQuestion.key}-${option}`}
+                                      className="flex flex-col items-center justify-center rounded-lg border-2 bg-transparent p-4 text-center font-body h-full transition-all duration-300 cursor-pointer hover:bg-accent/10 hover:border-accent has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:shadow-md has-[:checked]:scale-105"
+                                    >
+                                      <FormControl>
+                                        <Checkbox
+                                          id={`${currentQuestion.key}-${option}`}
+                                          className="sr-only"
+                                          checked={checkboxField.value?.includes(option)}
+                                          onCheckedChange={(checked) => {
+                                            return checked
+                                              ? checkboxField.onChange([...(checkboxField.value || []), option])
+                                              : checkboxField.onChange(
+                                                checkboxField.value?.filter(
+                                                  (value: string) => value !== option
+                                                )
+                                              );
+                                          }}
+                                        />
+                                      </FormControl>
+                                      {Icon && <Icon className="w-8 h-8 mb-3 text-primary" />}
+                                      <span className="font-semibold">{option}</span>
+                                    </Label>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
                     <FormMessage className="text-center pt-2" />
                   </FormItem>
                 )}
@@ -207,10 +252,14 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                 </Button>
                 <p className="text-sm text-muted-foreground">{`Step ${currentStep + 1} of ${totalSteps}`}</p>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground hidden sm:inline">Press Enter</span>
-                  <Button type="button" onClick={handleNext}>
-                    {currentStep < totalSteps - 1 ? 'Next' : 'Show Summary'}
-                  </Button>
+                  {currentQuestion.selectType === 'multiple' && (
+                    <>
+                      <span className="text-xs text-muted-foreground hidden sm:inline">Press Enter</span>
+                      <Button type="button" onClick={handleNext}>
+                        {currentStep < totalSteps - 1 ? 'Next' : 'Show Summary'}
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </form>
