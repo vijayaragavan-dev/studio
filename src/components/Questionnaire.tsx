@@ -56,13 +56,6 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleSingleSelect = async (value: string) => {
-    const fieldName = currentQuestion.key as any;
-    form.setValue(fieldName, value);
-    await new Promise(resolve => setTimeout(resolve, 300)); // Short delay for user to see selection
-    handleNext();
-  };
-
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
@@ -71,7 +64,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
           if (!isLoading) {
             onSubmit(summary);
           }
-        } else if (currentQuestion.selectType === 'multiple') {
+        } else {
           handleNext();
         }
       }
@@ -82,7 +75,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [currentStep, summary, isLoading, currentQuestion]);
+  }, [currentStep, summary, isLoading]);
 
   const MotionCard = motion(Card);
 
@@ -135,6 +128,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Submit & Find Destinations
             </Button>
+            <span className="text-xs text-muted-foreground hidden sm:block">Press Enter</span>
           </div>
         </CardFooter>
       </MotionCard>
@@ -174,7 +168,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                         name={currentQuestion.key as any}
                         render={({ field }) => (
                           <RadioGroup
-                            onValueChange={handleSingleSelect}
+                            onValueChange={field.onChange}
                             defaultValue={field.value}
                             className="grid grid-cols-2 md:grid-cols-3 gap-4"
                           >
@@ -251,13 +245,9 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                 </Button>
                 <p className="text-sm text-muted-foreground">{`Step ${currentStep + 1} of ${totalSteps}`}</p>
                 <div className="flex items-center gap-2">
-                  {currentQuestion.selectType === 'multiple' && (
-                    <>
-                      <Button type="button" onClick={handleNext}>
-                        {currentStep < totalSteps - 1 ? 'Next' : 'Show Summary'}
-                      </Button>
-                    </>
-                  )}
+                  <Button type="button" onClick={handleNext}>
+                    {currentStep < totalSteps - 1 ? 'Next' : 'Show Summary'}
+                  </Button>
                 </div>
               </div>
             </form>
