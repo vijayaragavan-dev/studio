@@ -56,24 +56,6 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleAutoNext = async () => {
-    const fieldName = currentQuestion.key as keyof z.infer<typeof FormSchema>;
-    const isValid = await form.trigger(fieldName);
-    if (isValid) {
-      if (currentStep < totalSteps - 1) {
-        // Use a short timeout to allow the user to see their selection
-        setTimeout(() => {
-          setCurrentStep((prev) => prev + 1);
-        }, 300);
-      } else {
-        setTimeout(() => {
-          setSummary(form.getValues());
-        }, 300);
-      }
-    }
-  };
-
-
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
@@ -146,7 +128,6 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Submit & Find Destinations
             </Button>
-            <span className="text-xs text-muted-foreground hidden sm:block">Press Enter</span>
           </div>
         </CardFooter>
       </MotionCard>
