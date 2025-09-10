@@ -56,6 +56,24 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
+  const handleAutoNext = async () => {
+    const fieldName = currentQuestion.key as keyof z.infer<typeof FormSchema>;
+    const isValid = await form.trigger(fieldName);
+    if (isValid) {
+      if (currentStep < totalSteps - 1) {
+        // Use a short timeout to allow the user to see their selection
+        setTimeout(() => {
+          setCurrentStep((prev) => prev + 1);
+        }, 300);
+      } else {
+        setTimeout(() => {
+          setSummary(form.getValues());
+        }, 300);
+      }
+    }
+  };
+
+
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
@@ -168,7 +186,9 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                         name={currentQuestion.key as any}
                         render={({ field }) => (
                           <RadioGroup
-                            onValueChange={field.onChange}
+                            onValueChange={(value) => {
+                                field.onChange(value);
+                            }}
                             defaultValue={field.value}
                             className="grid grid-cols-2 md:grid-cols-3 gap-4"
                           >
@@ -196,6 +216,8 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {currentQuestion.options.map((option, index) => {
                           const Icon = currentQuestion.icons ? currentQuestion.icons[index] : null;
+                          const noPreferenceOptions = ['No preference', 'Open to any', 'Flexible', 'Doesn’t matter'];
+
                           return (
                             <FormField
                               key={option}
@@ -214,13 +236,26 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                                           className="sr-only"
                                           checked={checkboxField.value?.includes(option)}
                                           onCheckedChange={(checked) => {
-                                            return checked
-                                              ? checkboxField.onChange([...(checkboxField.value || []), option])
-                                              : checkboxField.onChange(
-                                                checkboxField.value?.filter(
+                                            const currentValue = checkboxField.value || [];
+                                            const isNoPreference = noPreferenceOptions.includes(option);
+
+                                            if (checked) {
+                                              if (isNoPreference) {
+                                                // If 'No preference' is checked, set it as the only value
+                                                checkboxField.onChange([option]);
+                                              } else {
+                                                // If another option is checked, remove any 'No preference' values and add the new one
+                                                const newValue = currentValue.filter(val => !noPreferenceOptions.includes(val));
+                                                checkboxField.onChange([...newValue, option]);
+                                              }
+                                            } else {
+                                              // If an option is unchecked, just remove it
+                                              checkboxField.onChange(
+                                                currentValue.filter(
                                                   (value: string) => value !== option
                                                 )
                                               );
+                                            }
                                           }}
                                         />
                                       </FormControl>
