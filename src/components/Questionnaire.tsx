@@ -115,16 +115,16 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
             ))}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between items-center pt-4">
-          <Button type="button" variant="outline" onClick={handleBack}>
+        <CardFooter className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center pt-4 gap-4">
+          <Button type="button" variant="outline" onClick={handleBack} className="w-full sm:w-auto">
             Back to Questions
           </Button>
-          <div className="flex items-center gap-2">
-             <span className="text-xs text-muted-foreground hidden sm:inline">Press Enter</span>
-            <Button type="button" onClick={() => onSubmit(summary)} disabled={isLoading}>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button type="button" onClick={() => onSubmit(summary)} disabled={isLoading} className="w-full sm:w-auto flex-grow">
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Submit & Find Destinations
             </Button>
+            <span className="text-xs text-muted-foreground hidden sm:inline">Press Enter</span>
           </div>
         </CardFooter>
       </MotionCard>
