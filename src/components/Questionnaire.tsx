@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { z } from 'zod';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -53,6 +53,21 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
   
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission
+        handleNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [currentStep]);
+
   const currentQuestion = questions[currentStep];
 
   const MotionCard = motion(Card);
@@ -182,9 +197,12 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                   Previous
                 </Button>
                 <p className="text-sm text-muted-foreground">{`Step ${currentStep + 1} of ${totalSteps}`}</p>
-                <Button type="button" onClick={handleNext}>
-                  {currentStep < totalSteps - 1 ? 'Next' : 'Show Summary'}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground hidden sm:inline">Press Enter</span>
+                  <Button type="button" onClick={handleNext}>
+                    {currentStep < totalSteps - 1 ? 'Next' : 'Show Summary'}
+                  </Button>
+                </div>
               </div>
             </form>
           </Form>
