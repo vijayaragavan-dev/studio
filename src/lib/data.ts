@@ -84,7 +84,7 @@ export const questions: Question[] = [
     question: 'Preferred weather?',
     options: ['Hot & Sunny', 'Cold & Snowy', 'Cool Hills', 'Moderate', 'Doesn’t matter'],
     icons: [Sun, Snowflake, Mountain, Trees, Smile, Star],
-    selectType: 'single',
+    selectType: 'multiple',
   },
   {
     id: 7,
