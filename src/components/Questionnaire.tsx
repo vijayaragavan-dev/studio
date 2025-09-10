@@ -135,7 +135,6 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Submit & Find Destinations
             </Button>
-            <span className="text-xs text-muted-foreground hidden sm:inline">Press Enter</span>
           </div>
         </CardFooter>
       </MotionCard>
@@ -254,7 +253,6 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
                 <div className="flex items-center gap-2">
                   {currentQuestion.selectType === 'multiple' && (
                     <>
-                      <span className="text-xs text-muted-foreground hidden sm:inline">Press Enter</span>
                       <Button type="button" onClick={handleNext}>
                         {currentStep < totalSteps - 1 ? 'Next' : 'Show Summary'}
                       </Button>
