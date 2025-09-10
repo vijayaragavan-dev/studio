@@ -57,7 +57,13 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault(); // Prevent form submission
-        handleNext();
+        if (summary) {
+          if (!isLoading) {
+            onSubmit(summary);
+          }
+        } else {
+          handleNext();
+        }
       }
     };
 
@@ -66,7 +72,7 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [currentStep]);
+  }, [currentStep, summary, isLoading]);
 
   const currentQuestion = questions[currentStep];
 
@@ -113,10 +119,13 @@ export default function Questionnaire({ form, onSubmit, isLoading }: Questionnai
           <Button type="button" variant="outline" onClick={handleBack}>
             Back to Questions
           </Button>
-          <Button type="button" onClick={() => onSubmit(summary)} disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Submit & Find Destinations
-          </Button>
+          <div className="flex items-center gap-2">
+             <span className="text-xs text-muted-foreground hidden sm:inline">Press Enter</span>
+            <Button type="button" onClick={() => onSubmit(summary)} disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Submit & Find Destinations
+            </Button>
+          </div>
         </CardFooter>
       </MotionCard>
     );
