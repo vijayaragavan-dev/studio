@@ -5,7 +5,7 @@ import { useState, useRef } from 'react';
 import type { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plane, Compass, Star, ArrowRight, Lightbulb, Bot, User, LogOut, History } from 'lucide-react';
+import { Plane, Compass, Star, ArrowRight, Lightbulb, Bot, User, LogOut, History, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
