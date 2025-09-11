@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { saveHistory } from '@/lib/firestore';
 import AuthButtons from '@/components/AuthButtons';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Home() {
   const [view, setView] = useState<'home' | 'form' | 'suggestions'>('home');
@@ -117,7 +118,8 @@ export default function Home() {
           <Plane className="w-8 h-8 text-primary" />
           <span className="font-headline text-2xl font-bold">Wanderlust Wizard</span>
         </Link>
-        <div>
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
           {loading ? (
             <div className="w-24 h-10 bg-muted rounded-md animate-pulse" />
           ) : user ? (
