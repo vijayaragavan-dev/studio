@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plane, Compass, Star, ArrowRight, Lightbulb, Bot, CheckCircle } from 'lucide-react';
+import { Plane, Compass, Star, ArrowRight, Lightbulb, Bot, CheckCircle, User, LogOut, History, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -18,6 +18,17 @@ import { useToast } from '@/hooks/use-toast';
 import { questions } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { saveHistory } from '@/lib/firestore';
 
 export default function Home() {
   const [view, setView] = useState<'home' | 'form' | 'suggestions'>('home');
@@ -25,6 +36,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const questionnaireRef = useRef<HTMLDivElement>(null);
+  const { user, signInWithGoogle, signOut, loading } = useAuth();
   
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -38,6 +50,13 @@ export default function Home() {
       if (result && result.destinations && result.destinations.length > 0) {
         setSuggestions(result.destinations);
         setView('suggestions');
+        if (user) {
+          await saveHistory(user.uid, { preferences: data, suggestions: result.destinations });
+          toast({
+            title: 'History Saved',
+            description: 'Your travel preferences and suggestions have been saved.',
+          });
+        }
       } else {
         toast({
           variant: 'destructive',
@@ -94,9 +113,46 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="container mx-auto max-w-5xl text-center py-6 px-4 flex justify-between items-center">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <Plane className="w-8 h-8 text-primary" />
           <span className="font-headline text-2xl font-bold">Wanderlust Wizard</span>
+        </Link>
+        <div>
+          {loading ? (
+            <div className="w-10 h-10 bg-muted rounded-full animate-pulse" />
+          ) : user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
+                  <Avatar>
+                    <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                    <AvatarFallback>
+                      {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>{user.displayName}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/history">
+                    <History className="mr-2 h-4 w-4" />
+                    <span>History</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={signOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign Out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="outline" onClick={signInWithGoogle}>
+              <LogIn className="mr-2 h-4 w-4" />
+              Sign In
+            </Button>
+          )}
         </div>
       </header>
 
