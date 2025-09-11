@@ -2,15 +2,25 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, User, signOut as firebaseSignOut } from 'firebase/auth';
+import { 
+  onAuthStateChanged, 
+  User, 
+  signOut as firebaseSignOut,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile
+} from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import type { SignInFormSchema, SignUpFormSchema } from '@/lib/schema';
+import type { z } from 'zod';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signIn: (data: z.infer<typeof SignInFormSchema>) => Promise<void>;
+  signUp: (data: z.infer<typeof SignUpFormSchema>) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -29,35 +39,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
+  const signIn = async (data: z.infer<typeof SignInFormSchema>) => {
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      toast({
+        title: 'Signed In',
+        description: `Welcome back, ${userCredential.user.displayName || userCredential.user.email}!`,
+      });
+    } catch (error: any) {
+      console.error("Error signing in: ", error);
+      toast({
+        variant: 'destructive',
+        title: 'Sign-in Failed',
+        description: error.message || 'Could not sign in. Please check your credentials and try again.',
+      });
+      throw error; // Re-throw to be caught by the form handler
+    }
+  };
+
+  const signUp = async (data: z.infer<typeof SignUpFormSchema>) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const user = userCredential.user;
       
+      // Update user profile with display name
+      await updateProfile(user, { displayName: data.name });
+
       // Create user document in Firestore
       const userRef = doc(db, 'users', user.uid);
       await setDoc(userRef, {
-        displayName: user.displayName,
+        displayName: data.name,
         email: user.email,
         photoURL: user.photoURL,
+        createdAt: serverTimestamp(),
         lastLogin: serverTimestamp(),
       }, { merge: true });
 
       toast({
-        title: 'Signed In',
-        description: `Welcome back, ${user.displayName}!`,
+        title: 'Account Created',
+        description: `Welcome, ${data.name}! You are now signed in.`,
       });
-
-    } catch (error) {
-      console.error("Error signing in with Google: ", error);
+    } catch (error: any) {
+      console.error("Error signing up: ", error);
       toast({
         variant: 'destructive',
-        title: 'Sign-in Failed',
-        description: 'Could not sign in with Google. Please try again.',
+        title: 'Sign-up Failed',
+        description: error.message || 'Could not create an account. Please try again.',
       });
+       throw error; // Re-throw to be caught by the form handler
     }
-  };
+  }
 
   const signOut = async () => {
     try {
@@ -76,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const value = { user, loading, signInWithGoogle, signOut };
+  const value = { user, loading, signIn, signUp, signOut };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

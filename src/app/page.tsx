@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import type { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plane, Compass, Star, ArrowRight, Lightbulb, Bot, CheckCircle, User, LogOut, History, LogIn } from 'lucide-react';
+import { Plane, Compass, Star, ArrowRight, Lightbulb, Bot, User, LogOut, History } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -15,7 +15,6 @@ import { getSuggestionsAction } from '@/app/actions';
 import Questionnaire from '@/components/Questionnaire';
 import SuggestionResults from '@/components/SuggestionResults';
 import { useToast } from '@/hooks/use-toast';
-import { questions } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
@@ -29,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { saveHistory } from '@/lib/firestore';
+import AuthButtons from '@/components/AuthButtons';
 
 export default function Home() {
   const [view, setView] = useState<'home' | 'form' | 'suggestions'>('home');
@@ -36,7 +36,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const questionnaireRef = useRef<HTMLDivElement>(null);
-  const { user, signInWithGoogle, signOut, loading } = useAuth();
+  const { user, signOut, loading } = useAuth();
   
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -119,7 +119,7 @@ export default function Home() {
         </Link>
         <div>
           {loading ? (
-            <div className="w-10 h-10 bg-muted rounded-full animate-pulse" />
+            <div className="w-24 h-10 bg-muted rounded-md animate-pulse" />
           ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -133,7 +133,7 @@ export default function Home() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{user.displayName}</DropdownMenuLabel>
+                <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/history">
@@ -148,10 +148,7 @@ export default function Home() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button variant="outline" onClick={signInWithGoogle}>
-              <LogIn className="mr-2 h-4 w-4" />
-              Sign In
-            </Button>
+            <AuthButtons />
           )}
         </div>
       </header>
@@ -167,7 +164,7 @@ export default function Home() {
               variants={fadeIn}
             >
               <Image 
-                src="https://picsum.photos/1600/900"
+                src="https://picsum.photos/seed/home-hero/1600/900"
                 alt="Beautiful travel destination"
                 data-ai-hint="travel landscape"
                 fill

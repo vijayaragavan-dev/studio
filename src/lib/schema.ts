@@ -23,3 +23,14 @@ const schemaFields = questions.reduce(
 );
 
 export const FormSchema = z.object(schemaFields);
+
+export const SignUpFormSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Please enter a valid email." }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+});
+
+export const SignInFormSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email." }),
+  password: z.string().min(1, { message: "Password is required." }),
+});
